@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: carService
+  datasource:
+    url: jdbc:postgresql://localhost:5432/carService
+    username: postgres
+    password: P@ssw0rd
+  security:
+    user:
+      name: admin
+      password: 12345
+  jpa:
+    hibernate:
+      ddl-auto: update
+  liquibase:
+    enabled: false
