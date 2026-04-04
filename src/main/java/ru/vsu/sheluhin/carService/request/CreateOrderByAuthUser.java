@@ -7,9 +7,5 @@ import ru.vsu.sheluhin.carService.entity.Service;
 
 import java.util.List;
 
-@Data
-@Component
-public class CreateOrderByAuthUser {
-    Order newOrder;
-    List<Service> serviceList;
+public record CreateOrderByAuthUser (Order newOrder, List<Service> serviceList) {
 }

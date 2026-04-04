@@ -8,13 +8,11 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
-@Component
-@Data
-public class AddServiceForModelRequest {
+public record AddServiceForModelRequest (
     @NotBlank
-    int serviceId;
+    int serviceId,
 
     @Column(precision = 9, scale = 2)
     @Digits(integer = 7, fraction = 2)
-    BigDecimal price;
-}
+    BigDecimal price
+) {}

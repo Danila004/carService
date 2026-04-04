@@ -8,10 +8,5 @@ import ru.vsu.sheluhin.carService.entity.UnauthUser;
 
 import java.util.List;
 
-@Component
-@Data
-public class CreateOrderByUnauthUser {
-    UnauthUser newUser;
-    Order newOrder;
-    List<Service> serviceList;
+public record CreateOrderByUnauthUser (UnauthUser newUser, Order newOrder, List<Service> serviceList) {
 }

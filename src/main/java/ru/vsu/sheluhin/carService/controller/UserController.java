@@ -62,20 +62,20 @@ public class UserController {
 
     @PostMapping("/{userId}/newOrder")
     public Order newOrder(@PathVariable int userId, @RequestBody CreateOrderByAuthUser request) {
-        Order newOrder = request.getNewOrder();
+        Order newOrder = request.newOrder();
         newOrder.setAuthUserId(userId);
         Order newOrderDb = orderService.newOrder(newOrder);
-        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), request.getServiceList());
+        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), request.serviceList());
         return newOrderDb;
     }
 
     @PostMapping("/newOrder")
     public ResponseEntity<Void> newOrder(@RequestBody CreateOrderByUnauthUser request) {
-        UnauthUser newUserDb = userService.addUnauthUser(request.getNewUser());
-        Order newOrder = request.getNewOrder();
+        UnauthUser newUserDb = userService.addUnauthUser(request.newUser());
+        Order newOrder = request.newOrder();
         newOrder.setUnauthUserId(newUserDb.getUnauthUserId());
         Order newOrderDb = orderService.newOrder(newOrder);
-        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), request.getServiceList());
+        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), request.serviceList());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
