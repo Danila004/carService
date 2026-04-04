@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.sheluhin.carService.entity.*;
+import ru.vsu.sheluhin.carService.request.CreateOrderByAuthUser;
+import ru.vsu.sheluhin.carService.request.CreateOrderByUnauthUser;
 import ru.vsu.sheluhin.carService.response.ProfileResponse;
 import ru.vsu.sheluhin.carService.service.*;
 
@@ -59,19 +61,21 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/newOrder")
-    public Order newOrder(@PathVariable int userId, @RequestBody Order newOrder, @RequestBody List<Service> serviceList) {
+    public Order newOrder(@PathVariable int userId, @RequestBody CreateOrderByAuthUser request) {
+        Order newOrder = request.getNewOrder();
         newOrder.setAuthUserId(userId);
         Order newOrderDb = orderService.newOrder(newOrder);
-        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), serviceList);
+        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), request.getServiceList());
         return newOrderDb;
     }
 
     @PostMapping("/newOrder")
-    public ResponseEntity<Void> newOrder(@RequestBody UnauthUser newUser, @RequestBody Order newOrder, @RequestBody List<Service> serviceList) {
-        UnauthUser newUserDb = userService.addUnauthUser(newUser);
+    public ResponseEntity<Void> newOrder(@RequestBody CreateOrderByUnauthUser request) {
+        UnauthUser newUserDb = userService.addUnauthUser(request.getNewUser());
+        Order newOrder = request.getNewOrder();
         newOrder.setUnauthUserId(newUserDb.getUnauthUserId());
         Order newOrderDb = orderService.newOrder(newOrder);
-        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), serviceList);
+        serviceInOrderService.addServiceInOrder(newOrderDb.getOrderId(), request.getServiceList());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
