@@ -14,6 +14,9 @@ import ru.vsu.sheluhin.carService.repository.ModelRepository;
 import ru.vsu.sheluhin.carService.response.ErrorCode;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ModelService {
@@ -30,20 +33,22 @@ public class ModelService {
         return modelRepository.save(newModel);
     }
 
-    public Page<Model> getModels(int page) {
-        Pageable pageable = PageRequest.of(page,
-                commonProperties.getPageSize(),
-                Sort.by(commonProperties.getModelSortBy()));
+//    public List<Model> getModels(String status) {
+//        List<Model> models = modelRepository.findAll(Sort.by(commonProperties.getModelSortBy()));
+//
+//        if(status != null)
+//            return models.stream()
+//                    .filter(model -> model.getStatus().toString().equals(status))
+//                    .collect(Collectors.toList());
+//
+//        return models;
+//    }
 
-        return modelRepository.findAll(pageable);
-    }
-
-    public Page<Model> getModels(Status status, int page) {
-        Pageable pageable = PageRequest.of(page,
-                commonProperties.getPageSize(),
-                Sort.by(commonProperties.getModelSortBy()));
-
-        return modelRepository.findModelByStatusContaining(status, pageable);
+    public List<Model> getModels(int brandId, Optional<Status> status) {
+        List<Model> models = modelRepository.findAllByBrandId(brandId, Sort.by(commonProperties.getModelSortBy()));
+        return status.map(value -> models.stream()
+                .filter(model -> model.getStatus().equals(value))
+                .collect(Collectors.toList())).orElse(models);
     }
 
     @Transactional

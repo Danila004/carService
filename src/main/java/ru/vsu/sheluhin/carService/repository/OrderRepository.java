@@ -21,6 +21,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findAll(Pageable pageable);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Orders o SET o.orderStatus=:orderStatus WHERE o.orderId=:orderId")
-    void updateOrderStatusById(@Param("orderStatus") String orderStatus, @Param("orderId") int orderId);
+    @Query("UPDATE Orders o SET o.orderStatus=:newOrderStatus WHERE o.orderId=:orderId")
+    void updateOrderStatusById(Order.OrderStatus newOrderStatus, int orderId);
 }

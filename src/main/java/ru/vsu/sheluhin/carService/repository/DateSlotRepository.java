@@ -15,15 +15,10 @@ public interface DateSlotRepository extends JpaRepository<DateSlot, Integer> {
 
     void deleteAllByVisitDateBefore(LocalDateTime visitDateBefore);
 
-//    @Query("SELECT dt.visitDate, SUM(CASE WHEN dt.) FROM DateSlots dt " +
-//            "WHERE date_trunc(dt.visitDate, 'day')=:day " +
-//            "GROUP BY date_trunc(dt.visitDate, 'minute') ")
-//    List<DateSlot> findAllByLocalDate(LocalDate day);
-
     @Query(value = "WITH FreeDateSlots AS " +
             "(SELECT * FROM DateSlots dt " +
             "WHERE dt.status LIKE 'FREE' " +
-            "date_trunc(dt.visitDate, 'day')=:date) " +
+            "date_trunc(dt.visitDate, 'day')=:findDate) " +
             "                                      " +
             "SELECT * FROM FreeDateSlots fds " +
             "WHERE fds.masterId = (SELECT fds1.masterId" +
@@ -32,13 +27,13 @@ public interface DateSlotRepository extends JpaRepository<DateSlot, Integer> {
             "                      ORDER BY COUNT(*) DESC" +
             "                      LIMIT 1)",
     nativeQuery = true)
-    List<DateSlot> findAllByLocalDate(@Param("date") LocalDate date);
+    List<DateSlot> findAllByLocalDate(LocalDate findDate);
 
     @Query(value = "SELECT * FROM DateSlots dt WHERE dt.slotId=:slotId FOR UPDATE",
     nativeQuery = true)
     DateSlot findDateSlotBySlotId(int slotId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE DateSlots dt SET dt.status='FREE' WHERE dt.slotId=:slotId")
-    void updateAccessStatusToFree(int slotId);
+    @Query("UPDATE DateSlots dt SET dt.status=:newStatus WHERE dt.slotId=:slotId")
+    void updateAccessStatusById(DateSlot.AccessStatus newStatus, int slotId);
 }

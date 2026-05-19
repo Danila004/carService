@@ -7,10 +7,14 @@ import ru.vsu.sheluhin.carService.entity.Brand;
 import ru.vsu.sheluhin.carService.entity.Status;
 import ru.vsu.sheluhin.carService.service.BrandService;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping(path = "/brands",
         produces = "application/json"
 )
+@CrossOrigin(origins = "http://localhost:5173")
 public class BrandController {
     private final BrandService brandService;
 
@@ -18,14 +22,9 @@ public class BrandController {
         this.brandService = brandService;
     }
 
-    @GetMapping(path = "/all")
-    public Page<Brand> getBrands(@RequestParam(defaultValue = "0") int page) {
-        return brandService.getBrands(page);
-    }
-
-    @GetMapping(path = "active")
-    public Page<Brand> getBrands(@RequestParam Status status, @RequestParam(defaultValue = "0") int page) {
-        return brandService.getBrands(status, page);
+    @GetMapping
+    public List<Brand> getBrands(@RequestParam(required = false) Optional<Status> status) {
+        return brandService.getBrands(status);
     }
 
     @PostMapping

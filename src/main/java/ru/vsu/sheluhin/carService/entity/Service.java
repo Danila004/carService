@@ -18,8 +18,6 @@ public class Service {
     @NotBlank
     private String serviceName;
 
-    private String description;
-
     @Enumerated(EnumType.STRING)
     private Status status;
 }

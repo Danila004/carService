@@ -1,16 +1,16 @@
 package ru.vsu.sheluhin.carService.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.sheluhin.carService.configuration.CommonProperties;
-import ru.vsu.sheluhin.carService.entity.Brand;
 import ru.vsu.sheluhin.carService.entity.Status;
-import ru.vsu.sheluhin.carService.repository.BrandRepository;
 import ru.vsu.sheluhin.carService.repository.ServiceRepository;
+import ru.vsu.sheluhin.carService.response.ServiceWithPriceResponse;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceService {
@@ -27,20 +27,19 @@ public class ServiceService {
         return serviceRepository.save(newService);
     }
 
-    public Page<ru.vsu.sheluhin.carService.entity.Service> getServices(int page) {
-        Pageable pageable = PageRequest.of(page,
-                commonProperties.getPageSize(),
-                Sort.by(commonProperties.getServiceSortBy()));
-
-        return serviceRepository.findAll(pageable);
+    public List<ru.vsu.sheluhin.carService.entity.Service> getServices(Optional<Status> status) {
+        List<ru.vsu.sheluhin.carService.entity.Service> services =
+                serviceRepository.findAll(Sort.by(commonProperties.getServiceSortBy()));
+        return status.map(value -> services.stream()
+                .filter(service -> service.getStatus().equals(value))
+                .collect(Collectors.toList())).orElse(services);
     }
 
-    public Page<ru.vsu.sheluhin.carService.entity.Service> getServices(Status status, int page) {
-        Pageable pageable = PageRequest.of(page,
-                commonProperties.getPageSize(),
-                Sort.by(commonProperties.getServiceSortBy()));
-
-        return serviceRepository.findServicesByStatusContaining(status, pageable);
+    public List<ServiceWithPriceResponse> getModelServices(Integer modelId, Optional<Status> status) {
+        List<ServiceWithPriceResponse> services = serviceRepository.findAllByModelId(modelId);
+        return status.map(value -> services.stream()
+                .filter(service -> service.status().equals(value))
+                .collect(Collectors.toList())).orElse(services);
     }
 
     @Transactional

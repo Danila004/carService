@@ -18,13 +18,11 @@ public class PriceService {
     public void addPrice(int modelId, List<AddServiceForModelRequest> serviceList) {
         for (AddServiceForModelRequest service : serviceList) {
             Price newPrice = new Price(0,
-                    service.getServiceId(),
+                    service.serviceId(),
                     modelId,
-                    service.getPrice());
-//            newPrice.setServiceId(service.serviceId());
-//            newPrice.setServiceId(modelId);
-//            newPrice.setPrice(service.price());
+                    service.price());
             priceRepository.save(newPrice);
         }
     }
+
 }

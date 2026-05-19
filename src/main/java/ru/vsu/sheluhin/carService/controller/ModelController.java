@@ -12,11 +12,13 @@ import ru.vsu.sheluhin.carService.service.PriceService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/models",
         produces = "application/json"
 )
+@CrossOrigin(origins = "http://localhost:5173")
 public class ModelController {
     private final ModelService modelService;
     private final PriceService priceService;
@@ -26,14 +28,14 @@ public class ModelController {
         this.priceService = priceService;
     }
 
-    @GetMapping(path = "/all")
-    public Page<Model> getModels(@RequestParam(defaultValue = "0") int page) {
-        return modelService.getModels(page);
-    }
+//    @GetMapping
+//    public List<Model> getModels(@RequestParam(required = false) String status) {
+//        return modelService.getModels(status);
+//    }
 
-    @GetMapping(path = "/active")
-    public Page<Model> getModels(@RequestParam Status status, @RequestParam(defaultValue = "0") int page) {
-        return modelService.getModels(status, page);
+    @GetMapping(path = "/{brandId}")
+    public List<Model> getModels(@PathVariable int brandId, @RequestParam(required = false) Optional<Status> status) {
+        return modelService.getModels(brandId, status);
     }
 
     @PostMapping

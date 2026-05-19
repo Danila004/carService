@@ -11,6 +11,10 @@ import ru.vsu.sheluhin.carService.entity.Brand;
 import ru.vsu.sheluhin.carService.entity.Status;
 import ru.vsu.sheluhin.carService.repository.BrandRepository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class BrandService {
 
@@ -26,20 +30,11 @@ public class BrandService {
         return brandRepository.save(newBrand);
     }
 
-    public Page<Brand> getBrands(int page) {
-        Pageable pageable = PageRequest.of(page,
-                commonProperties.getPageSize(),
-                Sort.by(commonProperties.getBrandSortBy()));
-
-        return brandRepository.findAll(pageable);
-    }
-
-    public Page<Brand> getBrands(Status status, int page) {
-        Pageable pageable = PageRequest.of(page,
-                commonProperties.getPageSize(),
-                Sort.by(commonProperties.getBrandSortBy()));
-
-        return brandRepository.findBrandsByStatusContaining(status, pageable);
+    public List<Brand> getBrands(Optional<Status> status) {
+        List<Brand> brands = brandRepository.findAll(Sort.by(commonProperties.getBrandSortBy()));
+        return status.map(value -> brands.stream()
+                .filter(brand -> brand.getStatus().equals(value))
+                .collect(Collectors.toList())).orElse(brands);
     }
 
     @Transactional

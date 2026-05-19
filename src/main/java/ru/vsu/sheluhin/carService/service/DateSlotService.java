@@ -1,6 +1,7 @@
 package ru.vsu.sheluhin.carService.service;
 
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.data.domain.Sort;
 import org.springframework.expression.AccessException;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,17 +46,17 @@ public class DateSlotService {
     }
 
     @Transactional
-    public DateSlot bookDateSlot(int dateSlotId) {
+    public void bookDateSlot(int dateSlotId) {
         DateSlot dateSlotDb = dateSlotRepository.findDateSlotBySlotId(dateSlotId);
         if (dateSlotDb.getStatus().equals(DateSlot.AccessStatus.BOOK))
             throw new ValidationException(ErrorCode.DATE_SLOT_ALREADY_BOOK);
 
-        dateSlotDb.setStatus(DateSlot.AccessStatus.BOOK);
-        return dateSlotRepository.save(dateSlotDb);
+        dateSlotRepository.updateAccessStatusById(DateSlot.AccessStatus.BOOK, dateSlotDb.getSlotId());
     }
 
+    @Transactional
     public void freeDateSlot(int dateSlotId) {
-        dateSlotRepository.updateAccessStatusToFree(dateSlotId);
+        dateSlotRepository.updateAccessStatusById(DateSlot.AccessStatus.FREE, dateSlotId);
     }
 
     //@Scheduled(cron = "0 0 6 1 * *")
@@ -66,7 +67,7 @@ public class DateSlotService {
         insertDateSlotsForMonth(LocalDate.now(), masterIds);
     }
 
-    @Scheduled
+    //@PostConstruct
     public void startDateSlots() {
         List<Integer> masterIds = authUserRepository.findAuthUserIdsByUserTypeContaining(AuthUser.UserType.MASTER,
                 Sort.by(commonProperties.getEmployerSortBy()));

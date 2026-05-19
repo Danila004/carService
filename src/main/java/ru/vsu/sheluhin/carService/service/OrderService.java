@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.sheluhin.carService.configuration.CommonProperties;
 import ru.vsu.sheluhin.carService.entity.AuthUser;
 import ru.vsu.sheluhin.carService.entity.Order;
@@ -36,10 +37,9 @@ public class OrderService {
         return orderRepository.save(newOrder);
     }
 
+    @Transactional
     public void setStatus(int orderId, Order.OrderStatus orderStatus) {
-        orderRepository.updateOrderStatusById(
-                Order.OrderStatus.values()[orderStatus.ordinal() + 1].toString(),
-                orderId);
+        orderRepository.updateOrderStatusById(orderStatus, orderId);
     }
 
     public Page<Order> getOrdersByMasterId(int masterId, int page) {
