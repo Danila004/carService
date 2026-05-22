@@ -33,17 +33,6 @@ public class ModelService {
         return modelRepository.save(newModel);
     }
 
-//    public List<Model> getModels(String status) {
-//        List<Model> models = modelRepository.findAll(Sort.by(commonProperties.getModelSortBy()));
-//
-//        if(status != null)
-//            return models.stream()
-//                    .filter(model -> model.getStatus().toString().equals(status))
-//                    .collect(Collectors.toList());
-//
-//        return models;
-//    }
-
     public List<Model> getModels(int brandId, Optional<Status> status) {
         List<Model> models = modelRepository.findAllByBrandId(brandId, Sort.by(commonProperties.getModelSortBy()));
         return status.map(value -> models.stream()
@@ -51,17 +40,7 @@ public class ModelService {
                 .collect(Collectors.toList())).orElse(models);
     }
 
-    @Transactional
-    public void setStatus(int modelId, Status newStatus) {
-        modelRepository.updateStatusById(newStatus, modelId);
-    }
-
-    public void setReleaseDate(int modelId, LocalDate newDate) {
-        Model model = modelRepository.getModelByModelId(modelId);
-        if (model.getReleaseDate().isAfter(newDate)){
-            throw new ValidationException(ErrorCode.NEW_DATE_IS_BEFORE_EXIST_DATE);
-        }
-        model.setReleaseDate(newDate);
+    public void setModel(Model model) {
         modelRepository.save(model);
     }
 }

@@ -21,17 +21,10 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:5173")
 public class ModelController {
     private final ModelService modelService;
-    private final PriceService priceService;
 
-    public ModelController(ModelService modelService, PriceService priceService) {
+    public ModelController(ModelService modelService) {
         this.modelService = modelService;
-        this.priceService = priceService;
     }
-
-//    @GetMapping
-//    public List<Model> getModels(@RequestParam(required = false) String status) {
-//        return modelService.getModels(status);
-//    }
 
     @GetMapping(path = "/{brandId}")
     public List<Model> getModels(@PathVariable int brandId, @RequestParam(required = false) Optional<Status> status) {
@@ -39,21 +32,13 @@ public class ModelController {
     }
 
     @PostMapping
-    public Model addModel(@RequestBody AddModelRequest request) {//@RequestBody Model newModel, @RequestBody List<AddServiceForModelRequest> serviceList) {
-        Model newModelDb = modelService.addModel(request.newModel());
-        priceService.addPrice(newModelDb.getModelId(), request.serviceList());
-        return newModelDb;
+    public Model addModel(@RequestBody Model newModel) {
+        return modelService.addModel(newModel);
     }
 
-    @PatchMapping(path = "/{modelId}/setStatus")
-    public ResponseEntity<Void> setStatus(@PathVariable int modelId, @RequestBody Status newStatus) {
-        modelService.setStatus(modelId, newStatus);
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping(path = "/{modelId}/setReleaseDate")
-    public ResponseEntity<Void> setReleaseDate(@PathVariable int modelId, @RequestBody LocalDate newDate) {
-        modelService.setReleaseDate(modelId, newDate);
+    @PutMapping
+    public ResponseEntity<Void> setModel(@RequestBody Model model) {
+        modelService.setModel(model);
         return ResponseEntity.ok().build();
     }
 }

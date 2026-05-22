@@ -37,8 +37,7 @@ public class BrandService {
                 .collect(Collectors.toList())).orElse(brands);
     }
 
-    @Transactional
-    public void setStatus(int brandId, Status newStatus) {
-        brandRepository.updateStatusById(newStatus, brandId);
+    public void setBrand(Brand brand) {
+        brandRepository.save(brand);
     }
 }

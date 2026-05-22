@@ -27,4 +27,7 @@ public class Price {
     @Column(precision = 9, scale = 2)
     @Digits(integer = 7, fraction = 2)
     private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

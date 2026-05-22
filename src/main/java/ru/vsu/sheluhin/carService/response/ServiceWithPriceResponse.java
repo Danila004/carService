@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 public record ServiceWithPriceResponse(
     Integer serviceId,
     String serviceName,
+    Integer modelId,
     BigDecimal price,
     Status status
 ) { }

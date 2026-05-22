@@ -32,9 +32,9 @@ public class BrandController {
         return brandService.addBrand(newBrand);
     }
 
-    @PatchMapping(path = "/{brandId}/setStatus")
-    public ResponseEntity<Void> setStatus(@PathVariable int brandId, @RequestBody Status newStatus) {
-        brandService.setStatus(brandId, newStatus);
+    @PutMapping
+    public ResponseEntity<Void> setStatus(@RequestBody Brand brand) {
+        brandService.setBrand(brand);
         return ResponseEntity.ok().build();
     }
 }

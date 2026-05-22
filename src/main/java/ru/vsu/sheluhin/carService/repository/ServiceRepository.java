@@ -22,7 +22,7 @@ public interface ServiceRepository extends JpaRepository<Service, Integer> {
     @Query("SELECT s FROM Services s WHERE s.status=:status")
     Page<Service> findServicesByStatusContaining(Status status, Pageable pageable);
 
-    @Query("SELECT s.serviceId, s.serviceName, p.price, s.status " +
+    @Query("SELECT s.serviceId, s.serviceName, p.modelId, p.price, p.status " +
             "FROM Prices p " +
             "JOIN Services s ON s.serviceId = p.serviceId " +
             "WHERE p.modelId=:modelId")
