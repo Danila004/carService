@@ -2,7 +2,6 @@ package ru.vsu.sheluhin.carService.service;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.sheluhin.carService.configuration.CommonProperties;
 import ru.vsu.sheluhin.carService.entity.Status;
 import ru.vsu.sheluhin.carService.repository.ServiceRepository;
@@ -42,8 +41,7 @@ public class ServiceService {
                 .collect(Collectors.toList())).orElse(services);
     }
 
-    @Transactional
-    public void setStatus(int serviceId, Status newStatus) {
-        serviceRepository.updateStatusById(newStatus, serviceId);
+    public ru.vsu.sheluhin.carService.entity.Service setService(ru.vsu.sheluhin.carService.entity.Service service) {
+        return serviceRepository.save(service);
     }
 }

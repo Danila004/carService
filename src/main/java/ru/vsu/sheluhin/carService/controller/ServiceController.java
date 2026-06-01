@@ -38,9 +38,8 @@ public class ServiceController {
         return serviceService.addService(newService);
     }
 
-    @PatchMapping(path = "/{serviceId}/setStatus")
-    public ResponseEntity<Void> setStatus(@PathVariable int serviceId, @RequestBody Status newStatus) {
-        serviceService.setStatus(serviceId, newStatus);
-        return ResponseEntity.ok().build();
+    @PutMapping
+    public Service setService(@RequestBody Service service) {
+        return serviceService.setService(service);
     }
 }

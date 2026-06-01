@@ -15,14 +15,7 @@ import java.util.List;
 
 public interface ServiceRepository extends JpaRepository<Service, Integer> {
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE Services s SET s.status=:newStatus WHERE s.serviceId=:serviceId")
-    void updateStatusById(Status newStatus, int serviceId);
-
-    @Query("SELECT s FROM Services s WHERE s.status=:status")
-    Page<Service> findServicesByStatusContaining(Status status, Pageable pageable);
-
-    @Query("SELECT s.serviceId, s.serviceName, p.modelId, p.price, p.status " +
+    @Query("SELECT p.priceId, s.serviceId, s.serviceName, p.modelId, p.price, p.status " +
             "FROM Prices p " +
             "JOIN Services s ON s.serviceId = p.serviceId " +
             "WHERE p.modelId=:modelId")
