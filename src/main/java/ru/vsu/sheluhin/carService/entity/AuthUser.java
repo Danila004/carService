@@ -38,7 +38,7 @@ public class AuthUser {
     private WorkStatus workStatus;
 
     public enum UserType {
-        ADMIN, MASTER
+        ADMIN, MASTER, CLIENT
     }
 
     public enum WorkStatus {

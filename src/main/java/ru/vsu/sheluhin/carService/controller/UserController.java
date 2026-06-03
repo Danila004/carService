@@ -9,6 +9,8 @@ import ru.vsu.sheluhin.carService.entity.*;
 import ru.vsu.sheluhin.carService.request.CreateOrderByAuthUser;
 import ru.vsu.sheluhin.carService.request.CreateOrderByUnauthUser;
 import ru.vsu.sheluhin.carService.response.ProfileResponse;
+import ru.vsu.sheluhin.carService.response.UserResponse;
+import ru.vsu.sheluhin.carService.response.UserStatisticsResponse;
 import ru.vsu.sheluhin.carService.service.*;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.Optional;
 @RequestMapping(path = "/users",
                 produces = "application/json"
 )
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     private final UserService userService;
     private final OrderService orderService;
@@ -42,8 +45,13 @@ public class UserController {
     }
 
     @GetMapping
-    public Page<AuthUser> getUsers(@RequestParam AuthUser.UserType userType, @RequestParam(defaultValue = "0") int page) {
-        return userService.getUsers(userType, page);
+    public List<UserResponse> getUsers(@RequestParam Optional<AuthUser.UserType> userType) {
+        return userService.getUsers(userType);
+    }
+
+    @GetMapping(path = "/{userId}/statistics")
+    public UserStatisticsResponse getUserStatistics(@PathVariable int userId) {
+        return userService.getUserStatistics(userId);
     }
 
     @PostMapping
@@ -54,9 +62,15 @@ public class UserController {
         return newAuthUserDb;
     }
 
-    @PatchMapping(path = "/{masterId}/setWorkStatus")
-    public ResponseEntity<Void> setStatus(@PathVariable int masterId, @RequestBody AuthUser.WorkStatus newWorkStatus) {
-        userService.setWorkStatus(masterId, newWorkStatus);
+    @PatchMapping(path = "/{userId}/setWorkStatus")
+    public ResponseEntity<Void> setWorkStatus(@PathVariable int userId, @RequestBody AuthUser.WorkStatus newWorkStatus) {
+        userService.setWorkStatus(userId, newWorkStatus);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(path = "/{userId}/setUserType")
+    public ResponseEntity<Void> setUserType(@PathVariable int userId, @RequestBody AuthUser.UserType newUserType) {
+        userService.setUserType(userId, newUserType);
         return ResponseEntity.ok().build();
     }
 

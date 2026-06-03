@@ -24,6 +24,7 @@ public class Price {
     @NotNull
     private int modelId;
 
+    @NotNull
     @Column(precision = 9, scale = 2)
     @Digits(integer = 7, fraction = 2)
     private BigDecimal price;
