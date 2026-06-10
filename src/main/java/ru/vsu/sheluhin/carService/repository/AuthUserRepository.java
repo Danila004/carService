@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.vsu.sheluhin.carService.entity.AuthUser;
 import ru.vsu.sheluhin.carService.response.UserResponse;
@@ -20,9 +19,6 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, Integer> {
 
     @Query("SELECT au FROM AuthUsers au WHERE au.phoneNumber=:phoneNumber")
     Optional<AuthUser> findAuthUsersByPhoneNumber(String phoneNumber);
-
-    @Query("SELECT au FROM AuthUsers au WHERE au.userType=:userType")
-    Page<AuthUser> findByUserTypeContaining(AuthUser.UserType userType, Pageable pageable);
 
     @Query("SELECT au.authUserId FROM AuthUsers au WHERE au.userType=:userType AND au.workStatus='WORK'")
     List<Integer> findAuthUserIdsByUserTypeContaining(AuthUser.UserType userType, Sort sort);
@@ -51,4 +47,10 @@ public interface AuthUserRepository extends JpaRepository<AuthUser, Integer> {
 
     @Query("SELECT au.authUserId, au.userName, au.phoneNumber, au.userType, au.workStatus FROM AuthUsers au")
     List<UserResponse> findAllUsers();
+
+    Optional<UserResponse> findUserByPhoneNumber(String phoneNumber);
+
+    Page<UserResponse> findAuthUsersByUserType(AuthUser.UserType userType, Pageable pageable);
+
+    Page<UserResponse> findAllBy(Pageable pageable);
 }

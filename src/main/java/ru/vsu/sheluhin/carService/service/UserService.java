@@ -12,6 +12,7 @@ import ru.vsu.sheluhin.carService.entity.AuthUser;
 import ru.vsu.sheluhin.carService.entity.UnauthUser;
 import ru.vsu.sheluhin.carService.repository.AuthUserRepository;
 import ru.vsu.sheluhin.carService.repository.UnauthUserRepository;
+import ru.vsu.sheluhin.carService.response.PageUserResponse;
 import ru.vsu.sheluhin.carService.response.UserResponse;
 import ru.vsu.sheluhin.carService.response.UserStatisticsResponse;
 
@@ -36,20 +37,20 @@ public class UserService {
         return authUserRepository.findAuthUsersByPhoneNumber(login);
     }
 
-    public List<UserResponse> getUsers(Optional<AuthUser.UserType> userType) {
-//        Pageable pageable = PageRequest.of(page,
-//                commonProperties.getPageSize(),
-//                Sort.by(commonProperties.getEmployerSortBy()).descending());
+    public PageUserResponse getUsers(Optional<AuthUser.UserType> userType, Integer page) {
+        Pageable pageable = PageRequest.of(page, commonProperties.getPageSize());
 
-        List<UserResponse> users = authUserRepository.findAllUsers();
-
-        return userType.map(value -> users.stream()
-                .filter(user -> user.userType().equals(value))
-                .collect(Collectors.toList())).orElse(users);
+        return userType.map(type ->
+                PageUserResponse.from(authUserRepository.findAuthUsersByUserType(type, pageable)))
+                .orElseGet(() -> PageUserResponse.from(authUserRepository.findAllBy(pageable)));
     }
 
     public UserStatisticsResponse getUserStatistics(int userId) {
         return authUserRepository.getAuthUserStatistics(userId);
+    }
+
+    public Optional<UserResponse> findUserByPhone(String phoneNumber) {
+        return authUserRepository.findUserByPhoneNumber(phoneNumber);
     }
 
     public AuthUser addAuthUser(AuthUser newMaster) {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vsu.sheluhin.carService.entity.*;
 import ru.vsu.sheluhin.carService.request.CreateOrderByAuthUser;
 import ru.vsu.sheluhin.carService.request.CreateOrderByUnauthUser;
+import ru.vsu.sheluhin.carService.response.PageUserResponse;
 import ru.vsu.sheluhin.carService.response.ProfileResponse;
 import ru.vsu.sheluhin.carService.response.UserResponse;
 import ru.vsu.sheluhin.carService.response.UserStatisticsResponse;
@@ -45,8 +46,13 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponse> getUsers(@RequestParam Optional<AuthUser.UserType> userType) {
-        return userService.getUsers(userType);
+    public PageUserResponse getUsers(@RequestParam Optional<AuthUser.UserType> userType, @RequestParam Integer page) {
+        return userService.getUsers(userType, page);
+    }
+
+    @GetMapping(path = "/find")
+    public Optional<UserResponse> findUserByPhone(@RequestParam String phoneNumber) {
+        return userService.findUserByPhone(phoneNumber);
     }
 
     @GetMapping(path = "/{userId}/statistics")
