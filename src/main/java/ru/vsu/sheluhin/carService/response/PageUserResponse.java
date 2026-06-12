@@ -16,12 +16,8 @@ public class PageUserResponse {
     private Integer pageNumber;
 
     public static PageUserResponse from(Page<UserResponse> page) {
-        PageUserResponse response = new PageUserResponse();
-
-        response.setUsers(page.getContent());
-        response.setPageNumber(page.getNumber());
-        response.setTotalPages(page.getTotalPages());
-
-        return response;
+        return new PageUserResponse(page.getContent(),
+                page.getNumber(),
+                page.getTotalPages());
     }
 }

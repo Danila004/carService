@@ -26,10 +26,6 @@ public class OrderController {
         return orderService.getOrders(page);
     }
 
-    @GetMapping(path = "/{masterId}")
-    public Page<Order> getOrders(@PathVariable int masterId, @RequestParam(defaultValue = "0") int page) {
-        return orderService.getOrdersByMasterId(masterId, page);
-    }
 
     @PatchMapping(path = "/{orderId}/setStatus")
     public ResponseEntity<Void> setStatus(@PathVariable int orderId, @RequestParam Order.OrderStatus orderStatus) {

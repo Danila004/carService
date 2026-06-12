@@ -33,14 +33,17 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @NotNull
+    private String userName;
+
+    @NotNull
+    private String userPhoneNumber;
+
     @Null
     private Integer authUserId;
 
-    @Null
-    private Integer unauthUserId;
-
     @NotNull
-    private int masterId;
+    private Integer masterId;
 
     @NotNull
     private String brandName;
