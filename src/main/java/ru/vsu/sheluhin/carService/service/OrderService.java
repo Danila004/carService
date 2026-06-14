@@ -12,8 +12,13 @@ import ru.vsu.sheluhin.carService.entity.AuthUser;
 import ru.vsu.sheluhin.carService.entity.Order;
 import ru.vsu.sheluhin.carService.repository.OrderRepository;
 import ru.vsu.sheluhin.carService.request.OrderFilterRequest;
+import ru.vsu.sheluhin.carService.response.OrderDetailsForAdminResponse;
+import ru.vsu.sheluhin.carService.response.OrderDetailsForUserOrMasterResponse;
 import ru.vsu.sheluhin.carService.response.PageOrderResponse;
+import ru.vsu.sheluhin.carService.response.UserAndMaster;
 import ru.vsu.sheluhin.carService.specification.OrderSpecifications;
+
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -31,7 +36,7 @@ public class OrderService {
                 Sort.by(commonProperties.getOrderSortBy()).descending());
 
         Specification<Order> spec = Specification
-                .where(OrderSpecifications.hasAuthUserId(userId))
+                .where(OrderSpecifications.hasUserId(userId))
                 .and(OrderSpecifications.hasStateNumber(filter.stateNumber()))
                 .and(OrderSpecifications.hasDateGreaterThanOrEqualTo(filter.start()))
                 .and(OrderSpecifications.hasDateLessThanOrEqualTo(filter.end()));
@@ -52,6 +57,21 @@ public class OrderService {
         orderRepository.updateOrderStatusById(orderStatus, orderId);
     }
 
+    public OrderDetailsForUserOrMasterResponse getOrderDetailsForUserOrMaster(int orderId) {
+        return new OrderDetailsForUserOrMasterResponse(orderRepository.getServicesForOrder(orderId));
+    }
+
+    public OrderDetailsForAdminResponse getOrderDetailsForAdmin(int orderId) {
+        OrderDetailsForUserOrMasterResponse serviceDetails =
+                new OrderDetailsForUserOrMasterResponse(orderRepository.getServicesForOrder(orderId));
+        UserAndMaster userAndMasterDetails = orderRepository.getUserAndMasterForOrder(orderId);
+        return new OrderDetailsForAdminResponse(serviceDetails.services(),
+                userAndMasterDetails.userName(),
+                userAndMasterDetails.userPhoneNumber(),
+                userAndMasterDetails.masterName(),
+                userAndMasterDetails.masterPhoneNumber());
+    }
+
     public Page<Order> getOrdersByMasterId(int masterId, int page) {
         Pageable pageable = PageRequest.of(page,
                 commonProperties.getPageSize(),
@@ -60,12 +80,17 @@ public class OrderService {
         return orderRepository.findAllByMasterId(masterId, pageable);
     }
 
-    public Page<Order> getOrders(int page) {
+    public PageOrderResponse getOrders(OrderFilterRequest filter, int page) {
         Pageable pageable = PageRequest.of(page,
                 commonProperties.getPageSize(),
                 Sort.by(commonProperties.getOrderSortBy()).descending());
 
-        return orderRepository.findAll(pageable);
+        Specification<Order> spec = Specification
+                .where(OrderSpecifications.hasStateNumber(filter.stateNumber()))
+                .and(OrderSpecifications.hasDateGreaterThanOrEqualTo(filter.start()))
+                .and(OrderSpecifications.hasDateLessThanOrEqualTo(filter.end()));
+
+        return PageOrderResponse.from(orderRepository.findAll(spec, pageable));
     }
 
 }

@@ -12,7 +12,11 @@ import org.springframework.data.repository.query.Param;
 import ru.vsu.sheluhin.carService.entity.AuthUser;
 import ru.vsu.sheluhin.carService.entity.Order;
 import ru.vsu.sheluhin.carService.entity.UnauthUser;
+import ru.vsu.sheluhin.carService.response.OrderDetailsForUserOrMasterResponse;
 import ru.vsu.sheluhin.carService.response.OrderResponse;
+import ru.vsu.sheluhin.carService.response.UserAndMaster;
+
+import java.util.List;
 
 @NullMarked
 public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpecificationExecutor<Order> {
@@ -24,4 +28,23 @@ public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpeci
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Orders o SET o.orderStatus=:newOrderStatus WHERE o.orderId=:orderId")
     void updateOrderStatusById(Order.OrderStatus newOrderStatus, int orderId);
+
+    @Query(value = """
+            SELECT s.service_name
+            FROM services_in_order so
+            JOIN services s ON s.service_Id=so.service_id
+            WHERE so.order_id=:orderId
+            """, nativeQuery = true)
+    List<String> getServicesForOrder(int orderId);
+
+    @Query(value = """
+            SELECT o.user_name AS userName, 
+            o.user_phone_number AS userPhoneNumber, 
+            au.user_name AS masterName, 
+            au.phone_number AS masterPhoneNumber
+            FROM orders o 
+            JOIN auth_users au ON au.auth_user_id=o.master_id
+            WHERE o.order_id=:orderId
+            """, nativeQuery = true)
+    UserAndMaster getUserAndMasterForOrder(int orderId);
 }

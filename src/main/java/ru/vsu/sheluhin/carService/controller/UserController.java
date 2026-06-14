@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/{userId}/orders")
-    public PageOrderResponse getOrders(@PathVariable int userId, @RequestParam OrderFilterRequest filter, @RequestParam int page) {
+    public PageOrderResponse getOrders(@PathVariable int userId, OrderFilterRequest filter, @RequestParam int page) {
         return orderService.getOrdersByUserId(userId, filter, page);
     }
 

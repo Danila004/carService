@@ -7,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.sheluhin.carService.entity.AuthUser;
 import ru.vsu.sheluhin.carService.entity.Order;
+import ru.vsu.sheluhin.carService.request.OrderFilterRequest;
+import ru.vsu.sheluhin.carService.response.OrderDetailsForAdminResponse;
+import ru.vsu.sheluhin.carService.response.OrderDetailsForUserOrMasterResponse;
+import ru.vsu.sheluhin.carService.response.PageOrderResponse;
 import ru.vsu.sheluhin.carService.service.OrderService;
 import ru.vsu.sheluhin.carService.service.UserService;
 
@@ -14,6 +18,7 @@ import ru.vsu.sheluhin.carService.service.UserService;
 @RequestMapping(path = "/orders",
                 produces = "application/json"
 )
+@CrossOrigin(origins = "http://localhost:5173")
 public class OrderController {
     private final OrderService orderService;
 
@@ -22,8 +27,8 @@ public class OrderController {
     }
 
     @GetMapping
-    public Page<Order> getOrders(@RequestParam(defaultValue = "0") int page) {
-        return orderService.getOrders(page);
+    public PageOrderResponse getOrders(OrderFilterRequest filter, @RequestParam int page) {
+        return orderService.getOrders(filter, page);
     }
 
 
@@ -39,5 +44,13 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping(path = "/{orderId}/simpleDetails")
+    public OrderDetailsForUserOrMasterResponse getOrderDetailsForUserOrMaster(@PathVariable int orderId) {
+        return orderService.getOrderDetailsForUserOrMaster(orderId);
+    }
 
+    @GetMapping(path = "/{orderId}/fullDetails")
+    public OrderDetailsForAdminResponse getOrderDetailsForAdmin(@PathVariable int orderId) {
+        return orderService.getOrderDetailsForAdmin(orderId);
+    }
 }

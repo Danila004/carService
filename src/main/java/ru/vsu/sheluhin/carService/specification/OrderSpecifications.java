@@ -24,10 +24,10 @@ public class OrderSpecifications {
                 endDate.map(value -> criteriaBuilder.lessThanOrEqualTo(root.get("visitDate"), value)).orElse(null);
     }
 
-    public static Specification<Order> hasAuthUserId(int authUserId) {
+    public static Specification<Order> hasUserId(int userId) {
         return (root, query, criteriaBuilder) -> {
             Predicate isNotNull = criteriaBuilder.isNotNull(root.get("authUserId"));
-            Predicate isEqual = criteriaBuilder.equal(root.get("authUserId"), authUserId);
+            Predicate isEqual = criteriaBuilder.equal(root.get("authUserId"), userId);
             return criteriaBuilder.and(isNotNull, isEqual);
         };
     }

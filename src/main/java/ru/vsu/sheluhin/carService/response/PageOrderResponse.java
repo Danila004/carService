@@ -17,9 +17,11 @@ public class PageOrderResponse {
     private Integer pageNumber;
 
     public static PageOrderResponse from(Page<Order> page) {
+        System.out.println(page.getTotalPages());
+        System.out.println(page.getNumber());
         return new PageOrderResponse(page.stream().map(PageOrderResponse::toOrderResponse).toList(),
-                page.getNumber(),
-                page.getTotalPages());
+                page.getTotalPages(),
+                page.getNumber());
     }
 
     private static OrderResponse toOrderResponse(Order order) {

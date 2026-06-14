@@ -17,7 +17,7 @@ public class PageUserResponse {
 
     public static PageUserResponse from(Page<UserResponse> page) {
         return new PageUserResponse(page.getContent(),
-                page.getNumber(),
-                page.getTotalPages());
+                page.getTotalPages(),
+                page.getNumber());
     }
 }
