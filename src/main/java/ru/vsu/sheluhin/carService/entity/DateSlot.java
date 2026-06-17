@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Entity(name = "DateSlots")
@@ -18,7 +20,10 @@ public class DateSlot {
     private int slotId;
 
     @NotNull
-    private LocalDateTime visitDate;
+    private LocalDate visitDate;
+
+    @NotNull
+    private LocalTime visitTime;
 
     @NotNull
     private int masterId;

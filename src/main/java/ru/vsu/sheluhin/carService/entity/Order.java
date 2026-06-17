@@ -40,7 +40,7 @@ public class Order {
     private String userPhoneNumber;
 
     @Null
-    private Integer authUserId;
+    private Integer userId;
 
     @NotNull
     private Integer masterId;

@@ -3,6 +3,7 @@ package ru.vsu.sheluhin.carService.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.sheluhin.carService.entity.Order;
+import ru.vsu.sheluhin.carService.request.CreateOrderRequest;
 import ru.vsu.sheluhin.carService.request.OrderFilterRequest;
 import ru.vsu.sheluhin.carService.response.OrderDetailsForAdminResponse;
 import ru.vsu.sheluhin.carService.response.OrderDetailsForUserOrMasterResponse;
@@ -45,6 +46,12 @@ public class OrderController {
     @PatchMapping(path = "/{orderId}")
     public ResponseEntity<Void> setUserType(@PathVariable int orderId, @RequestBody Order.OrderStatus newOrderStatus) {
         orderService.setOrderStatus(orderId, newOrderStatus);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> add(@RequestBody CreateOrderRequest request) {
+        orderService.add(request);
         return ResponseEntity.ok().build();
     }
 }

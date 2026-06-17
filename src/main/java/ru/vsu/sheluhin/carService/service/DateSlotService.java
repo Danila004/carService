@@ -10,6 +10,7 @@ import ru.vsu.sheluhin.carService.entity.DateSlot;
 import ru.vsu.sheluhin.carService.exeption.ValidationException;
 import ru.vsu.sheluhin.carService.repository.UserRepository;
 import ru.vsu.sheluhin.carService.repository.DateSlotRepository;
+import ru.vsu.sheluhin.carService.response.DateSlotResponse;
 import ru.vsu.sheluhin.carService.response.ErrorCode;
 
 import java.time.LocalDate;
@@ -38,22 +39,18 @@ public class DateSlotService {
         }
     }
 
-    public List<DateSlot> getDateSlots(LocalDate date) {
+    public List<DateSlotResponse> getDateSlots(LocalDate date) {
         return dateSlotRepository.findAllByLocalDate(date);
     }
 
     @Transactional
-    public void bookDateSlot(int dateSlotId) {
+    public void setStatus(int dateSlotId, DateSlot.AccessStatus newStatus) {
         DateSlot dateSlotDb = dateSlotRepository.findDateSlotBySlotId(dateSlotId);
-        if (dateSlotDb.getStatus().equals(DateSlot.AccessStatus.BOOK))
-            throw new ValidationException(ErrorCode.DATE_SLOT_ALREADY_BOOK);
-
-        dateSlotRepository.updateAccessStatusById(DateSlot.AccessStatus.BOOK, dateSlotDb.getSlotId());
-    }
-
-    @Transactional
-    public void freeDateSlot(int dateSlotId) {
-        dateSlotRepository.updateAccessStatusById(DateSlot.AccessStatus.FREE, dateSlotId);
+        if(DateSlot.AccessStatus.BOOK.equals(newStatus)) {
+            if (dateSlotDb.getStatus().equals(DateSlot.AccessStatus.BOOK))
+                throw new ValidationException("Время уже занято");
+        }
+        dateSlotRepository.updateAccessStatusById(newStatus, dateSlotId);
     }
 
     //@Scheduled(cron = "0 0 6 1 * *")
@@ -95,16 +92,19 @@ public class DateSlotService {
             for (int id : masterIds) {
                 timeSlot = LocalTime.of(9, 0);
                 emptySlot.setMasterId(id);
+                emptySlot.setStatus(DateSlot.AccessStatus.FREE);
                 while (!timeSlot.equals(LocalTime.of(12, 0))) {
-                    emptySlot.setVisitDate(LocalDateTime.of(dateSlot, timeSlot));
+                    emptySlot.setVisitDate(LocalDate.of(dateSlot.getYear(), dateSlot.getMonth(), dateSlot.getDayOfMonth()));
+                    emptySlot.setVisitTime(timeSlot);
                     dateSlotRepository.save(emptySlot);
-                    timeSlot = timeSlot.plusMinutes(30);
+                    timeSlot = timeSlot.plusHours(1);
                 }
                 timeSlot = timeSlot.plusHours(1);
                 while (!timeSlot.equals(LocalTime.of(18, 0))) {
-                    emptySlot.setVisitDate(LocalDateTime.of(dateSlot, timeSlot));
+                    emptySlot.setVisitDate(LocalDate.of(dateSlot.getYear(), dateSlot.getMonth(), dateSlot.getDayOfMonth()));
+                    emptySlot.setVisitTime(timeSlot);
                     dateSlotRepository.save(emptySlot);
-                    timeSlot = timeSlot.plusMinutes(30);
+                    timeSlot = timeSlot.plusHours(1);
                 }
             }
         }

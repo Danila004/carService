@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.sheluhin.carService.configuration.CommonProperties;
 import ru.vsu.sheluhin.carService.entity.Order;
+import ru.vsu.sheluhin.carService.entity.ServiceInOrder;
 import ru.vsu.sheluhin.carService.repository.OrderRepository;
+import ru.vsu.sheluhin.carService.repository.ServiceInOrderRepository;
+import ru.vsu.sheluhin.carService.request.CreateOrderRequest;
 import ru.vsu.sheluhin.carService.request.OrderFilterRequest;
 import ru.vsu.sheluhin.carService.response.*;
 import ru.vsu.sheluhin.carService.specification.OrderSpecifications;
@@ -20,10 +23,12 @@ import java.util.Optional;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final ServiceInOrderRepository serviceInOrderRepository;
     private final CommonProperties commonProperties;
 
-    public OrderService(OrderRepository orderRepository, CommonProperties commonProperties) {
+    public OrderService(OrderRepository orderRepository, ServiceInOrderRepository serviceInOrderRepository, CommonProperties commonProperties) {
         this.orderRepository = orderRepository;
+        this.serviceInOrderRepository = serviceInOrderRepository;
         this.commonProperties = commonProperties;
     }
 
@@ -50,8 +55,14 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
-    public Order newOrder(Order newOrder) {
-        return orderRepository.save(newOrder);
+    @Transactional
+    public void add(CreateOrderRequest request) {
+
+        //request.newOrder().setUserId(null);
+        Order newOrderDb = orderRepository.save(request.newOrder());
+        for (Integer serviceId : request.serviceList()) {
+            serviceInOrderRepository.save(new ServiceInOrder(0, serviceId, newOrderDb.getOrderId()));
+        }
     }
 
     public OrderDetailsForUserOrMasterResponse getOrderDetailsForUserOrMaster(int orderId) {

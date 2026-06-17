@@ -17,18 +17,18 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("SELECT au FROM AuthUsers au WHERE au.phoneNumber=:phoneNumber")
+    @Query("SELECT u FROM Users u WHERE u.phoneNumber=:phoneNumber")
     Optional<User> findAuthUsersByPhoneNumber(String phoneNumber);
 
-    @Query("SELECT au.userId FROM AuthUsers au WHERE au.userType=:userType AND au.workStatus='WORK'")
+    @Query("SELECT u.userId FROM Users u WHERE u.userType=:userType AND u.workStatus='WORK'")
     List<Integer> findAuthUserIdsByUserTypeContaining(User.UserType userType, Sort sort);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE AuthUsers au SET au.workStatus=:newWorkStatus WHERE au.userId=:userId")
+    @Query("UPDATE Users u SET u.workStatus=:newWorkStatus WHERE u.userId=:userId")
     void updateWorkStatusById(User.WorkStatus newWorkStatus, int userId);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE AuthUsers au SET au.userType=:newUserType WHERE au.userId=:userId")
+    @Query("UPDATE Users u SET u.userType=:newUserType WHERE u.userId=:userId")
     void updateUserTypeById(User.UserType newUserType, int userId);
 
     @Query("SELECT pg_advisory_xact_lock(hashtext(:login))")
@@ -45,7 +45,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
         """, nativeQuery = true)
     UserStatisticsResponse getAuthUserStatistics(int userId);
 
-    @Query("SELECT au.userId, au.userName, au.phoneNumber, au.userType, au.workStatus FROM AuthUsers au")
+    @Query("SELECT u.userId, u.userName, u.phoneNumber, u.userType, u.workStatus FROM Users u")
     List<UserResponse> findAllUsers();
 
     Optional<UserResponse> findUserByPhoneNumber(String phoneNumber);

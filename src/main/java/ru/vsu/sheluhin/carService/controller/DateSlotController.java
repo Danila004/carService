@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vsu.sheluhin.carService.entity.DateSlot;
+import ru.vsu.sheluhin.carService.response.DateSlotResponse;
 import ru.vsu.sheluhin.carService.service.DateSlotService;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping(path = "/dateSlots",
         produces = "application/json"
 )
+@CrossOrigin(origins = "http://localhost:5173")
 public class DateSlotController {
 
     private final DateSlotService dateSlotService;
@@ -23,19 +25,13 @@ public class DateSlotController {
     }
 
     @GetMapping
-    public List<DateSlot> getDateSlots(@RequestParam LocalDate date) {
+    public List<DateSlotResponse> getDateSlots(@RequestParam LocalDate date) {
         return dateSlotService.getDateSlots(date);
     }
 
-    @PatchMapping(path = "/{dateSlotId}/book")
-    public ResponseEntity<Void> bookDateSlot(@PathVariable int dateSlotId) {
-        dateSlotService.bookDateSlot(dateSlotId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping(path = "/{dateSlotId}/free")
-    public ResponseEntity<Void> freeDateSlot(@PathVariable int dateSlotId) {
-        dateSlotService.freeDateSlot(dateSlotId);
+    @PatchMapping(path = "/{slotId}")
+    public ResponseEntity<Void> setStatus(@PathVariable int slotId, @RequestBody DateSlot.AccessStatus newStatus) {
+        dateSlotService.setStatus(slotId, newStatus);
         return ResponseEntity.ok().build();
     }
 }

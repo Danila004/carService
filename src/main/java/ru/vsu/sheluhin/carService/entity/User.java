@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Data
-@Entity(name = "AuthUsers")
+@Entity(name = "Users")
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -16,9 +16,6 @@ public class User {
 
     @NotBlank(message = "Обязательное поле")
     private String userName;
-
-    @NotBlank(message = "Обязательное поле")
-    private String surname;
 
     @NotBlank(message = "Обязательное поле")
     @Pattern(regexp = "^8\\d{10}$")

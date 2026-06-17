@@ -11,7 +11,7 @@ import ru.vsu.sheluhin.carService.response.ErrorResponse;
 public class ControllerAdvice {
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handlerValidationException(final ValidationException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getErrorCode()));
+    public ResponseEntity<String> handlerValidationException(final ValidationException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }
