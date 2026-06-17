@@ -1,17 +1,14 @@
 package ru.vsu.sheluhin.carService.service;
 
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.data.domain.Sort;
-import org.springframework.expression.AccessException;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.sheluhin.carService.configuration.CommonProperties;
-import ru.vsu.sheluhin.carService.entity.AuthUser;
+import ru.vsu.sheluhin.carService.entity.User;
 import ru.vsu.sheluhin.carService.entity.DateSlot;
 import ru.vsu.sheluhin.carService.exeption.ValidationException;
-import ru.vsu.sheluhin.carService.repository.AuthUserRepository;
+import ru.vsu.sheluhin.carService.repository.UserRepository;
 import ru.vsu.sheluhin.carService.repository.DateSlotRepository;
 import ru.vsu.sheluhin.carService.response.ErrorCode;
 
@@ -25,13 +22,13 @@ import java.util.List;
 public class DateSlotService {
 
     private final DateSlotRepository dateSlotRepository;
-    private final AuthUserRepository authUserRepository;
+    private final UserRepository userRepository;
     private final CommonProperties commonProperties;
 
 
-    public DateSlotService(DateSlotRepository dateSlotRepository, AuthUserRepository authUserRepository, CommonProperties commonProperties, UserService userService) {
+    public DateSlotService(DateSlotRepository dateSlotRepository, UserRepository userRepository, CommonProperties commonProperties, UserService userService) {
         this.dateSlotRepository = dateSlotRepository;
-        this.authUserRepository = authUserRepository;
+        this.userRepository = userRepository;
         this.commonProperties = commonProperties;
     }
 
@@ -62,14 +59,14 @@ public class DateSlotService {
     //@Scheduled(cron = "0 0 6 1 * *")
     public void refreshDateSlots() {
         dateSlotRepository.deleteAllByVisitDateBefore(LocalDateTime.now());
-        List<Integer> masterIds = authUserRepository.findAuthUserIdsByUserTypeContaining(AuthUser.UserType.MASTER,
+        List<Integer> masterIds = userRepository.findAuthUserIdsByUserTypeContaining(User.UserType.MASTER,
                 Sort.by(commonProperties.getEmployerSortBy()));
         insertDateSlotsForMonth(LocalDate.now(), masterIds);
     }
 
     //@PostConstruct
     public void startDateSlots() {
-        List<Integer> masterIds = authUserRepository.findAuthUserIdsByUserTypeContaining(AuthUser.UserType.MASTER,
+        List<Integer> masterIds = userRepository.findAuthUserIdsByUserTypeContaining(User.UserType.MASTER,
                 Sort.by(commonProperties.getEmployerSortBy()));
 
         insertDateSlotsForMonth(LocalDate.now().plusDays(1), masterIds);

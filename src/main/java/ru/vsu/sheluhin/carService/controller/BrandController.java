@@ -23,7 +23,7 @@ public class BrandController {
     }
 
     @GetMapping
-    public List<Brand> getBrands(@RequestParam(required = false) Optional<Status> status) {
+    public List<Brand> getBrands(@RequestParam Optional<Status> status) {
         return brandService.getBrands(status);
     }
 

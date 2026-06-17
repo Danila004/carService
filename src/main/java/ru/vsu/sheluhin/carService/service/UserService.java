@@ -1,75 +1,62 @@
 package ru.vsu.sheluhin.carService.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vsu.sheluhin.carService.configuration.CommonProperties;
-import ru.vsu.sheluhin.carService.entity.AuthUser;
-import ru.vsu.sheluhin.carService.entity.UnauthUser;
-import ru.vsu.sheluhin.carService.repository.AuthUserRepository;
-import ru.vsu.sheluhin.carService.repository.UnauthUserRepository;
+import ru.vsu.sheluhin.carService.entity.User;
+import ru.vsu.sheluhin.carService.repository.UserRepository;
 import ru.vsu.sheluhin.carService.response.PageUserResponse;
 import ru.vsu.sheluhin.carService.response.UserResponse;
 import ru.vsu.sheluhin.carService.response.UserStatisticsResponse;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private final AuthUserRepository authUserRepository;
+    private final UserRepository userRepository;
     private final CommonProperties commonProperties;
-    private final UnauthUserRepository unauthUserRepository;
 
-    public UserService(AuthUserRepository authUserRepository, CommonProperties commonProperties, UnauthUserRepository unauthUserRepository) {
-        this.authUserRepository = authUserRepository;
+    public UserService(UserRepository userRepository, CommonProperties commonProperties) {
+        this.userRepository = userRepository;
         this.commonProperties = commonProperties;
-        this.unauthUserRepository = unauthUserRepository;
     }
 
-    public Optional<AuthUser> findUserByLogin(String login) {
-        return authUserRepository.findAuthUsersByPhoneNumber(login);
+    public Optional<User> findUserByLogin(String login) {
+        return userRepository.findAuthUsersByPhoneNumber(login);
     }
 
-    public PageUserResponse getUsers(Optional<AuthUser.UserType> userType, Integer page) {
+    public PageUserResponse getUsers(Optional<User.UserType> userType, Integer page) {
         Pageable pageable = PageRequest.of(page, commonProperties.getPageSize());
 
         return userType.map(type ->
-                PageUserResponse.from(authUserRepository.findAuthUsersByUserType(type, pageable)))
-                .orElseGet(() -> PageUserResponse.from(authUserRepository.findAllBy(pageable)));
+                PageUserResponse.from(userRepository.findAuthUsersByUserType(type, pageable)))
+                .orElseGet(() -> PageUserResponse.from(userRepository.findAllBy(pageable)));
     }
 
     public UserStatisticsResponse getUserStatistics(int userId) {
-        return authUserRepository.getAuthUserStatistics(userId);
+        return userRepository.getAuthUserStatistics(userId);
     }
 
     public Optional<UserResponse> findUserByPhone(String phoneNumber) {
-        return authUserRepository.findUserByPhoneNumber(phoneNumber);
+        return userRepository.findUserByPhoneNumber(phoneNumber);
     }
 
-    public AuthUser addAuthUser(AuthUser newMaster) {
-        return authUserRepository.save(newMaster);
-    }
-
-    @Transactional
-    public void setWorkStatus(int userId, AuthUser.WorkStatus newWorkStatus) {
-        authUserRepository.updateWorkStatusById(newWorkStatus, userId);
+    public User addUser(User newMaster) {
+        return userRepository.save(newMaster);
     }
 
     @Transactional
-    public void setUserType(int userId, AuthUser.UserType newUserType) {
-        authUserRepository.updateUserTypeById(newUserType, userId);
-        if(newUserType.equals(AuthUser.UserType.CLIENT))
-            authUserRepository.updateWorkStatusById(null, userId);
+    public void setWorkStatus(int userId, User.WorkStatus newWorkStatus) {
+        userRepository.updateWorkStatusById(newWorkStatus, userId);
     }
-    
-    public UnauthUser addUnauthUser(UnauthUser newUser) {
-        return unauthUserRepository.save(newUser);
+
+    @Transactional
+    public void setUserType(int userId, User.UserType newUserType) {
+        userRepository.updateUserTypeById(newUserType, userId);
+        if(newUserType.equals(User.UserType.CLIENT))
+            userRepository.updateWorkStatusById(null, userId);
     }
 }

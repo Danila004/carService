@@ -1,14 +1,8 @@
 package ru.vsu.sheluhin.carService.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import ru.vsu.sheluhin.carService.entity.Brand;
 import ru.vsu.sheluhin.carService.entity.Service;
-import ru.vsu.sheluhin.carService.entity.Status;
-import ru.vsu.sheluhin.carService.entity.UnauthUser;
 import ru.vsu.sheluhin.carService.response.ServiceWithPriceResponse;
 
 import java.util.List;
