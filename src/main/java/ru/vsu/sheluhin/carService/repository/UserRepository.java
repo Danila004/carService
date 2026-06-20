@@ -17,11 +17,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-    @Query("SELECT u FROM Users u WHERE u.phoneNumber=:phoneNumber")
-    Optional<User> findAuthUsersByPhoneNumber(String phoneNumber);
+    Optional<User> findUserByPhoneNumber(String phoneNumber);
 
-    @Query("SELECT u.userId FROM Users u WHERE u.userType=:userType AND u.workStatus='WORK'")
-    List<Integer> findAuthUserIdsByUserTypeContaining(User.UserType userType, Sort sort);
+    List<Integer> findAuthUserIdsByUserTypeAndWorkStatus(User.UserType userType, User.WorkStatus status, Sort sort);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Users u SET u.workStatus=:newWorkStatus WHERE u.userId=:userId")
@@ -44,11 +42,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
         WHERE user_id = :userId
         """, nativeQuery = true)
     UserStatisticsResponse getAuthUserStatistics(int userId);
-
-    @Query("SELECT u.userId, u.userName, u.phoneNumber, u.userType, u.workStatus FROM Users u")
-    List<UserResponse> findAllUsers();
-
-    Optional<UserResponse> findUserByPhoneNumber(String phoneNumber);
 
     Page<UserResponse> findAuthUsersByUserType(User.UserType userType, Pageable pageable);
 

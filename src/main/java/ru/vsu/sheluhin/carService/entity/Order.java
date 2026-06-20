@@ -39,7 +39,6 @@ public class Order {
     @NotNull
     private String userPhoneNumber;
 
-    @Null
     private Integer userId;
 
     @NotNull

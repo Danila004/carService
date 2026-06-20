@@ -14,14 +14,5 @@ import java.util.List;
 
 public interface ModelRepository extends JpaRepository<Model, Integer> {
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE Models m SET m.status=:newStatus WHERE m.modelId=:modelId")
-    void updateStatusById(Status newStatus, int modelId);
-
-    @Query("SELECT m FROM Models m WHERE m.status=:status")
-    Page<Model> findModelByStatusContaining(Status status, Pageable pageable);
-
-    Model getModelByModelId(int modelId);
-
     List<Model> findAllByBrandId(int brandId, Sort sort);
 }

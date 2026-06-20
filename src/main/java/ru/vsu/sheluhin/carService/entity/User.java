@@ -23,7 +23,6 @@ public class User {
     private String phoneNumber;
 
     @NotBlank(message = "Обязательное поле")
-    @Pattern(regexp = "^\\w{8}$")
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)

@@ -5,10 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.vsu.sheluhin.carService.exeption.ValidationException;
-import ru.vsu.sheluhin.carService.response.ErrorResponse;
 
 @RestControllerAdvice
-public class ControllerAdvice {
+public class ExceptionController {
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<String> handlerValidationException(final ValidationException exception) {

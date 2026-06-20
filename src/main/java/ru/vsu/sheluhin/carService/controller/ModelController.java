@@ -27,7 +27,7 @@ public class ModelController {
     }
 
     @GetMapping(path = "/{brandId}")
-    public List<Model> getModels(@PathVariable int brandId, @RequestParam(required = false) Optional<Status> status) {
+    public List<Model> getModels(@PathVariable int brandId, @RequestParam Optional<Status> status) {
         return modelService.getModels(brandId, status);
     }
 

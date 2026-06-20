@@ -25,7 +25,7 @@ public class Model {
     private int brandId;
 
     @NotNull
-    private LocalDate modelYear;
+    private Integer modelYear;
 
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -19,7 +19,7 @@ public interface DateSlotRepository extends JpaRepository<DateSlot, Integer> {
             (SELECT *,
             	ROW_NUMBER() OVER (PARTITION BY visit_time ORDER BY slot_id) AS rn
             FROM date_slots
-            WHERE status LIKE 'FREE' AND visit_date=:findDate)
+            WHERE status LIKE 'FREE' AND visit_date=:findDate AND visit_time > CURRENT_TIME + INTERVAL '5 minutes')
             
             SELECT slot_id AS slotId, visit_time AS visitTime, master_id AS masterId
             FROM FreeDateSlots

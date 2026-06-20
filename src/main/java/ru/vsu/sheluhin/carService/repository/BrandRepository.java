@@ -14,10 +14,4 @@ import java.util.List;
 
 public interface BrandRepository extends JpaRepository<Brand, Integer> {
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE Brands b SET b.status=:newStatus WHERE b.brandId=:brandId")
-    void updateStatusById(Status newStatus, int brandId);
-
-    @Query("SELECT b FROM Brands b WHERE b.status=:status")
-    List<Brand> findBrandsByStatusContaining(Status status, Sort sort);
 }

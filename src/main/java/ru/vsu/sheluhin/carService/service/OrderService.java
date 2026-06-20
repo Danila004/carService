@@ -57,10 +57,8 @@ public class OrderService {
 
     @Transactional
     public void add(CreateOrderRequest request) {
-
-        //request.newOrder().setUserId(null);
         Order newOrderDb = orderRepository.save(request.newOrder());
-        for (Integer serviceId : request.serviceList()) {
+        for (Integer serviceId : request.services()) {
             serviceInOrderRepository.save(new ServiceInOrder(0, serviceId, newOrderDb.getOrderId()));
         }
     }

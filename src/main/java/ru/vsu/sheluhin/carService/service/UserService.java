@@ -24,16 +24,12 @@ public class UserService {
         this.commonProperties = commonProperties;
     }
 
-    public Optional<User> findUserByLogin(String login) {
-        return userRepository.findAuthUsersByPhoneNumber(login);
-    }
-
     public PageUserResponse getUsers(Optional<User.UserType> userType, Integer page) {
         Pageable pageable = PageRequest.of(page, commonProperties.getPageSize());
 
         return userType.map(type ->
                 PageUserResponse.from(userRepository.findAuthUsersByUserType(type, pageable)))
-                .orElseGet(() -> PageUserResponse.from(userRepository.findAllBy(pageable)));
+                .orElse(PageUserResponse.from(userRepository.findAllBy(pageable)));
     }
 
     public UserStatisticsResponse getUserStatistics(int userId) {
@@ -41,7 +37,12 @@ public class UserService {
     }
 
     public Optional<UserResponse> findUserByPhone(String phoneNumber) {
-        return userRepository.findUserByPhoneNumber(phoneNumber);
+        return userRepository.findUserByPhoneNumber(phoneNumber).map(user ->
+                new UserResponse(user.getUserId(),
+                        user.getUserName(),
+                        user.getPhoneNumber(),
+                        user.getUserType(),
+                        user.getWorkStatus()));
     }
 
     public User addUser(User newMaster) {

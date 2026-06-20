@@ -56,14 +56,16 @@ public class DateSlotService {
     //@Scheduled(cron = "0 0 6 1 * *")
     public void refreshDateSlots() {
         dateSlotRepository.deleteAllByVisitDateBefore(LocalDateTime.now());
-        List<Integer> masterIds = userRepository.findAuthUserIdsByUserTypeContaining(User.UserType.MASTER,
+        List<Integer> masterIds = userRepository.findAuthUserIdsByUserTypeAndWorkStatus(User.UserType.MASTER,
+                User.WorkStatus.WORK,
                 Sort.by(commonProperties.getEmployerSortBy()));
         insertDateSlotsForMonth(LocalDate.now(), masterIds);
     }
 
     //@PostConstruct
     public void startDateSlots() {
-        List<Integer> masterIds = userRepository.findAuthUserIdsByUserTypeContaining(User.UserType.MASTER,
+        List<Integer> masterIds = userRepository.findAuthUserIdsByUserTypeAndWorkStatus(User.UserType.MASTER,
+                User.WorkStatus.WORK,
                 Sort.by(commonProperties.getEmployerSortBy()));
 
         insertDateSlotsForMonth(LocalDate.now().plusDays(1), masterIds);
