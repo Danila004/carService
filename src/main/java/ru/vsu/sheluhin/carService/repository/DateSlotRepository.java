@@ -35,4 +35,13 @@ public interface DateSlotRepository extends JpaRepository<DateSlot, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE DateSlots dt SET dt.status=:newStatus WHERE dt.slotId=:slotId")
     void updateAccessStatusById(DateSlot.AccessStatus newStatus, int slotId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE DateSlots dt SET dt.status='BOOK' " +
+            "WHERE dt.masterId=:masterId AND dt.visitDate BETWEEN :visitDateAfter AND :visitDateBefore")
+    void bookAllByVisitDateBetweenAndMasterId(LocalDate visitDateAfter, LocalDate visitDateBefore, int masterId);
+
+    void deleteAllByMasterId(int masterId);
+
+    void deleteAllByVisitDateAfterAndMasterId(LocalDate visitDateAfter, int masterId);
 }

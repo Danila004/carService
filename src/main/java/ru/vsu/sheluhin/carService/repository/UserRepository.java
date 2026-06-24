@@ -46,4 +46,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Page<UserResponse> findAuthUsersByUserType(User.UserType userType, Pageable pageable);
 
     Page<UserResponse> findAllBy(Pageable pageable);
+
+    User getUserByUserId(int userId);
 }

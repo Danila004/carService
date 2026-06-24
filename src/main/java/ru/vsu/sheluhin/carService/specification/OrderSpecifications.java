@@ -26,8 +26,8 @@ public class OrderSpecifications {
 
     public static Specification<Order> hasUserId(int userId) {
         return (root, query, criteriaBuilder) -> {
-            Predicate isNotNull = criteriaBuilder.isNotNull(root.get("authUserId"));
-            Predicate isEqual = criteriaBuilder.equal(root.get("authUserId"), userId);
+            Predicate isNotNull = criteriaBuilder.isNotNull(root.get("userId"));
+            Predicate isEqual = criteriaBuilder.equal(root.get("userId"), userId);
             return criteriaBuilder.and(isNotNull, isEqual);
         };
     }

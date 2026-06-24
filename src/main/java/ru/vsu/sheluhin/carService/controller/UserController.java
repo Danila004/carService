@@ -19,23 +19,11 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final OrderService orderService;
-    private final DateSlotService dateSlotService;
 
-    public UserController(UserService userService, OrderService orderService, DateSlotService dateSlotService) {
+    public UserController(UserService userService, OrderService orderService) {
         this.userService = userService;
         this.orderService = orderService;
-        this.dateSlotService = dateSlotService;
     }
-
-//    @GetMapping(path = "/{login}")
-//    public ProfileResponse profile(@PathVariable String login) {
-//        Optional<User> user = userService.findUserByLogin(SecurityContextHolder.getContext()
-//                .getAuthentication()
-//                .getName());
-//
-//        Page<Order> orders = orderService.getOrdersByUserId(user.get().getAuthUserId(), 0);
-//        return new ProfileResponse(user.get(), orders);
-//    }
 
     @GetMapping
     public PageUserResponse getUsers(@RequestParam Optional<User.UserType> userType, @RequestParam Integer page) {

@@ -85,7 +85,7 @@ public class DateSlotService {
         }
     }
 
-    private void insertDateSlotsForMonth(LocalDate startDate, List<Integer> masterIds) {
+    public void insertDateSlotsForMonth(LocalDate startDate, List<Integer> masterIds) {
         LocalDate dateSlot = startDate;
         LocalTime timeSlot;
         DateSlot emptySlot = new DateSlot();
